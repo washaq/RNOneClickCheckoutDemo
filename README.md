@@ -47,7 +47,6 @@ This is one way to run your app — you can also run it directly from within Xco
 ## Step 3: Integerating SDK with your App
 
 Now that you have successfully run the demo app, let's modify your app to integerate OneClickCheckout SDK in it.
-
 1.Open Your project in Xcode.
 2. Open `Podfile`.
 3. Add these frameworks in podfile. Use 1.2.0 or greater version of `OneClickCheckout` for React Native apps. You can see all versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Exclude `arm64` architecture for simulators and add it in `post_install`.
