@@ -47,9 +47,9 @@ This is one way to run your app — you can also run it directly from within Xco
 ## Step 3: Integerating SDK with your App
 
 Now that you have successfully run the demo app, let's modify your app to integerate OneClickCheckout SDK in it.
-1.Open Your project in Xcode.
+1. Open Your project in Xcode.
 2. Open `Podfile`.
-3. Add these frameworks in podfile. Use 1.2.0 or greater version of `OneClickCheckout` for React Native apps. You can see all versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Exclude `arm64` architecture for simulators and add it in `post_install`.
+3. Add these frameworks in podfile. Use `1.2.0` or greater version of `OneClickCheckout` for React Native apps. You can see all versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Exclude `arm64` architecture for simulators and add it in `post_install`.
 
 ```bash
 # .......
@@ -74,9 +74,9 @@ post_install do |installer|
   # ....... other script
   end
 ```
-3. Exclude `arm64` for `Any iOS Simulator SDK` from your target as well as shown in the image `YourProject -> Target -> Build Settings -> Excluded Architecture`
+4. Exclude `arm64` for `Any iOS Simulator SDK` from your target as well as shown in the image `YourProject -> Target -> Build Settings -> Excluded Architecture`
 ![Excluded](screenshots/excluded.png)
-4. Install dependencies now
+5. Install dependencies now
 ```bash
 # install pod dependencis
 cd ios/
@@ -84,7 +84,7 @@ cd ios/
 # then run
 pod install
 ```
-5. Let's add the wrappers and bridging required to use OneClickSDK. Right-click on your project name in Xcode and create a New Group with a name, just so we can have all the wrappers in one folder, i.e., 'OneClickCheckoutHelper'.
+6. Let's add the wrappers and bridging required to use OneClickSDK. Right-click on your project name in Xcode and create a New Group with a name, just so we can have all the wrappers in one folder, i.e., 'OneClickCheckoutHelper'.
 Rite click on folder and add Swift file with the name `OneClickButtonWrapper`. If you don't already have `YourProjectName-Bridging-Header.h` the it will ask you **Would you like to configure an Objective-C bridging header?** click on **Create Bridging Header**. Also create `OneClickEventEmitter.h` and `OneClickEventEmitter.m` for emitter and also create bridge for React native `OneClickButtonWrapperBridge.m`. Replace bellow code in each class or copy it from demo app.
 ![swift](screenshots/swift.png)
 ![bridgingHeader](screenshots/bridgingHeader.png)
@@ -307,7 +307,7 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 @end
 ```
 
-5. In `AppDelegate.mm` add following code.
+7. In `AppDelegate.mm` add following code.
 ```objective-c
 // AppDelegate.mm
 #import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with then name of your project.
@@ -318,9 +318,9 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 }
 
 ```
-6. Add `careem-connect` as LSApplicationQueriesSchemes and redirectUri as URL scheme in info.plist. Also add `Allow Arbitrary Loads` in `App Transport Security Settings` as shown in image.
+8. Add `careem-connect` as LSApplicationQueriesSchemes and redirectUri as URL scheme in info.plist. Also add `Allow Arbitrary Loads` in `App Transport Security Settings` as shown in image.
 ![Info.plist](screenshots/info.png)
-7. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.js` fine on react native side. and copy the following code.
+9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.js` fine on react native side. and copy the following code.
 ```javascript
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
 
 export default OneClickButtonWrapperComponent;
 ```
-8. Configuration of the button is required as follows to initialize the SDK correctly:
+10. Configuration of the button is required as follows to initialize the SDK correctly:
  - **clientId:** Client id of merchant (issued as part of onboarding by Careem)
  - **redirectUri:** Redirect uri, example com.your.app://careemcallback, use uri that when called by Careem will invoke your app.
  - **buttonStyle (optional):** Provide functionality to update button style, If not passed then it selects default value.
