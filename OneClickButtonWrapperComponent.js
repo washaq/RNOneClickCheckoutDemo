@@ -15,7 +15,6 @@ const OneClickButtonWrapperComponent = ({
   onComplete,
   ...props
 }) => {
-  const oneClickButtonRef = useRef(null);
 
   const configureButton = () => {    
     OneClickButtonWrapper.configureWithRef(
@@ -72,7 +71,6 @@ const OneClickButtonWrapperComponent = ({
 
   return (
     <OneClickButtonView
-      ref={oneClickButtonRef}
       style={styles.buttonContainer}
       {...props}
     />
