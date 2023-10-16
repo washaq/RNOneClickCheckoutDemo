@@ -108,7 +108,6 @@ class OneClickButtonWrapper: RCTViewManager {
   
   // Expose a method to configure the button from JavaScript
   @objc func handleFetchInvoiceResult(_ invoiceId: String) {
-    print("Invoice ID \(invoiceId)")
     self.cb?(.success(invoiceId))
   }
   
@@ -350,9 +349,7 @@ const OneClickButtonWrapperComponent = ({
     );
   };
 
-  const handleFetchInvoiceCallback = async () => {
-    console.log("handle fetchInvoiceCallback --");
-  
+  const handleFetchInvoiceCallback = async () => {  
     try {
       const invoiceId = await fetchInvoiceId();
       if (invoiceId) {
@@ -376,7 +373,6 @@ const OneClickButtonWrapperComponent = ({
 
   const handleOnCompleteCallback = (event) => {
     const { status } = event;
-    console.log('OnCompleteCallback status :', status);
     handleComplete(status)
   };
 
