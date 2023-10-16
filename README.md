@@ -25,6 +25,9 @@ cd ios/
 # then run
 bundle install && bundle exec pod install
 
+# then go back to previous directory
+cd ..
+
 # using npm
 npm start
 npm run ios
