@@ -320,7 +320,7 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 ```
 8. Add `careem-connect` as LSApplicationQueriesSchemes and redirectUri as URL scheme in info.plist. Also add `Allow Arbitrary Loads` in `App Transport Security Settings` as shown in image.
 ![Info.plist](screenshots/info.png)
-9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.js` fine on react native side. and copy the following code. Height of the button container is fix **`88 points`**.
+9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.js` file on react native side. and copy the following code. Height of the button container is fix **`88 points`**.
 ```javascript
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
