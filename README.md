@@ -78,10 +78,11 @@ cd ios/
 # then run
 pod install
 ```
-6. Let's add the wrappers and bridging required to use OneClickSDK. Right-click on your project name in Xcode and create a New Group with a name, just so we can have all the wrappers in one folder, i.e., 'OneClickCheckoutHelper'.
-Rite click on folder and add Swift file with the name `OneClickButtonWrapper`. If you don't already have `YourProjectName-Bridging-Header.h` the it will ask you **Would you like to configure an Objective-C bridging header?** click on **Create Bridging Header**. Also create `OneClickEventEmitter.h` and `OneClickEventEmitter.m` for emitter and also create bridge for React native `OneClickButtonWrapperBridge.m`. Replace bellow code in each class or copy it from demo app.
+6. Let's add the wrappers and bridging required to use OneClickSDK. Right-click on your project name in Xcode and create a new group for example 'OneClickCheckoutHelper.' Right-click on the 'OneClickCheckoutHelper' folder and add a Swift file with the name **`OneClickButtonWrapper.swift`** If you don't already have a **'YourProjectName-Bridging-Header.h'** file, it will ask you, **`Would you like to configure an Objective-C bridging header?`** Click on **`Create Bridging Header.`** Also, create **`OneClickEventEmitter.h`** and **`OneClickEventEmitter.m`** for the emitter, and create a bridge for React Native in **`OneClickButtonWrapperBridge.m.`** Replace the code in each class with the code provided in the demo app or copy it from here.
 ![swift](screenshots/swift.png)
 ![bridgingHeader](screenshots/bridgingHeader.png)
+
+### OneClickButtonWrapper.swift
 ```swift
 // OneClickButtonWrapper.swift
 import React
@@ -188,8 +189,9 @@ class OneClickButtonWrapper: RCTViewManager {
 }
 ```
 
+### YourProjectName-Bridging-Header.h
 ```objective-c
-// RNOneClickCheckoutDemo-Bridging-Header.h
+// YourProjectName-Bridging-Header.h
 
 #import "React/RCTBridgeModule.h"
 
@@ -203,6 +205,7 @@ class OneClickButtonWrapper: RCTViewManager {
 #import "OneClickEventEmitter.h" // Import the CustomEventEmitter header
 ```
 
+### OneClickEventEmitter.h
 ```objective-c
 // OneClickEventEmitter.h
 
@@ -216,6 +219,7 @@ class OneClickButtonWrapper: RCTViewManager {
 @end
 ```
 
+### OneClickEventEmitter.m
 ```objective-c
 // OneClickEventEmitter.m
 
@@ -248,6 +252,7 @@ RCT_EXPORT_MODULE();
 @end
 ```
 
+### OneClickButtonWrapperBridge.m
 ```objective-c
 // OneClickButtonWrapperBridge.m
 
@@ -302,6 +307,7 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 ```
 
 7. In `AppDelegate.mm` add following code.
+### AppDelegate.mm
 ```objective-c
 // AppDelegate.mm
 #import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with then name of your project.
