@@ -47,7 +47,7 @@ This is one way to run your app — you can also run it directly from within Xco
 Now that you have successfully run the demo app, let's modify your app to integerate OneClickCheckout SDK in it.
 1. Open Your project in Xcode.
 2. Open `Podfile`.
-3. Add these frameworks in podfile. Use `1.2.0` or greater version of `OneClickCheckout` for React Native apps. You can see all versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Exclude `arm64` architecture for simulators and add it in `post_install`.
+3. Add `OneClickCheckout` and `Analytika` frameworks in podfile. Use `1.2.0` or greater version of `OneClickCheckout` for React Native apps. You can see all versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Exclude `arm64` architecture for simulators and add it in `post_install`.
 
 ```bash
 # .......
@@ -72,9 +72,9 @@ post_install do |installer|
   # ....... other script
   end
 ```
-4. Exclude `arm64` for `Any iOS Simulator SDK` from your target as well as shown in the image `YourProject -> Target -> Build Settings -> Excluded Architecture`
+4. Exclude `arm64` for `Any iOS Simulator SDK` from project target as shown in the image `YourProject -> Target -> Build Settings -> Excluded Architecture`
 ![Excluded](screenshots/excluded.png)
-5. Install dependencies now
+5. Install pod dependencies
 ```bash
 # install pod dependencis
 cd ios/
