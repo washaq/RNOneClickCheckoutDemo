@@ -1,5 +1,5 @@
 # RNOneClickCheckoutDemo
-This is a RNOneClickCheckoutDemo project that explain how to use OneClickCheckout SDK in react native App.
+This is a React Native demo project that explain how to use OneClickCheckout SDK in react native App.
 
 # Getting Started
 
