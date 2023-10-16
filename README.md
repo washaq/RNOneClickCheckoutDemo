@@ -320,6 +320,8 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 8. Add `careem-connect` as LSApplicationQueriesSchemes and redirectUri as URL scheme in info.plist. Also add `Allow Arbitrary Loads` in `App Transport Security Settings` as shown in image.
 ![Info.plist](screenshots/info.png)
 9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.js` file on react native side. and copy the following code. Height of the button container is fix **`88 points`**.
+
+### OneClickButtonWrapperComponent.js
 ```javascript
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
@@ -420,7 +422,10 @@ export default OneClickButtonWrapperComponent;
  - **environment:** Environment either **`staging`** or **`production`**.
  - **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant needs to generate an invoice and return it within this function.
   - **onComplete:** On complete callback which is called at the end of transaction with status (success, alreadyPaid, failed, cancelled, invalidInvoiceId).
+### How you use OneClickButtonWrapperComponent
 ```javascript
+import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent.js';
+
 {/* Other components */}
 
 <OneClickButtonWrapperComponent
