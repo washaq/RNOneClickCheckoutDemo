@@ -418,10 +418,10 @@ export default OneClickButtonWrapperComponent;
  - **clientId:** Client id of merchant (issued as part of onboarding by Careem)
  - **redirectUri:** Redirect uri, example com.your.app://careemcallback, use uri that when called by Careem will invoke your app.
  - **buttonStyle (optional):** Provide functionality to update button style, If not passed then it selects default value.
-     - default value: CareemButtonStyle(style: CareemStyle.midnightBlue, buttonDescription: ButtonDescription.dark, cornerRadius: 28)
-     - CareemStyle (.green, .white, .midnightBlue)
-     - ButtonDescription (.dark, .light)
- - **environment:** Environment either sandbox or production.
+     - default value: **style: `midnightBlue`, buttonDescription: `dark`, cornerRadius: `28`**
+     - style (.green, .white, .midnightBlue)
+     - buttonDescription (.dark, .light)
+ - **environment:** Environment either **`staging`** or **`production`**.
  - **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant needs to generate an invoice and return it within this function.
   - **onComplete:** On complete callback which is called at the end of transaction with status (success, alreadyPaid, failed, cancelled, invalidInvoiceId(String)).
 ```javascript
