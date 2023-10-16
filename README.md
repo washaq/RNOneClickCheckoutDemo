@@ -454,5 +454,5 @@ const fetchInvoiceIdFromAPI = async () => {
 ```
 
 ## Congratulations! :tada:
-[![Demo](https://img.youtube.com/vi/pneaXbiXQnM/maxresdefault.jpg)](https://www.youtube.com/watch?v=pneaXbiXQnM)
+[Demo](screenshots/demo.mp4)
 You've successfully integerated OneClickCheckout SDK in your React Native App. :partying_face:
