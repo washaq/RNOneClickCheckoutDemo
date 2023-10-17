@@ -82,7 +82,7 @@ cd ios/
 # then run
 pod install
 ```
-6. Let's add the wrappers and bridging required to use OneClickSDK. Open your project in Xcode and add a Swift file with the name **`OneClickButtonWrapper.swift`** If you don't already have a **'YourProjectName-Bridging-Header.h'** file, it will ask you, **`Would you like to configure an Objective-C bridging header?`** Click on **`Create Bridging Header.`** Also, create **`OneClickEventEmitter.h`** and **`OneClickEventEmitter.m`** for the emitter, and create a bridge for React Native with the name **`OneClickButtonWrapperBridge.m.`** Replace the code in each class with the code provided in the demo app or copy it from here.
+6. Let's add the wrappers and bridging required to use OneClickSDK. Open your project in Xcode and add a Swift file with the name **`OneClickButtonWrapper.swift`** If you don't already have a **'YourProjectName-Bridging-Header.h'** file, it will ask, **`Would you like to configure an Objective-C bridging header?`** Click on **`Create Bridging Header.`** Also, create **`OneClickEventEmitter.h`** and **`OneClickEventEmitter.m`**, and create a bridge for React Native with the name **`OneClickButtonWrapperBridge.m.`** Replace the code in each class with the code provided in the demo app or copy it from here.
 ![swift](screenshots/swift.png)
 ![bridgingHeader](screenshots/bridgingHeader.png)
 
@@ -419,11 +419,11 @@ export default OneClickButtonWrapperComponent;
  - **redirectUri:** Redirect uri, example com.your.app://careemcallback, use uri that when called by Careem will invoke your app.
  - **buttonStyle (optional):** Provide functionality to update button style, If not passed then it selects default value.
      - default value: **style: `midnightBlue`, buttonDescription: `dark`, cornerRadius: `28`**
-     - style (.green, .white, .midnightBlue)
-     - buttonDescription (.dark, .light)
+     - style (`green`, `white`, `midnightBlue`)
+     - buttonDescription (`dark`, `light`)
  - **environment:** Environment either **`staging`** or **`production`**.
  - **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant needs to generate an invoice and return it within this function.
-  - **onComplete:** On complete callback which is called at the end of transaction with status (success, alreadyPaid, failed, cancelled, invalidInvoiceId).
+  - **onComplete:** On complete callback which is called at the end of transaction with status (`success`, `alreadyPaid`, `failed`, `cancelled`, `invalidInvoiceId`).
 ### How you use OneClickButtonWrapperComponent
 ```javascript
 import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent.js';
