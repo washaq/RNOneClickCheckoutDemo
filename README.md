@@ -323,9 +323,9 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 ```
 8. Add `careem-connect` as LSApplicationQueriesSchemes and redirectUri as URL scheme in info.plist. Also add `Allow Arbitrary Loads` in `App Transport Security Settings` as shown in image.
 ![Info.plist](screenshots/info.png)
-9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.js` file on react native side. and copy the following code. Height of the button container is fix **`88 points`**.
+9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.ios.js` file on react native side. and copy the following code. Height of the button container is fix **`88 points`**.
 
-### OneClickButtonWrapperComponent.js
+### OneClickButtonWrapperComponent.ios.js
 ```javascript
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
@@ -340,8 +340,8 @@ const OneClickButtonWrapperComponent = ({
   redirectUri,
   buttonStyle,
   environment,
-  fetchInvoiceId,
-  handleComplete,
+  fetchInvoiceCallback,
+  onComplete,
   ...props
 }) => {
 
@@ -354,9 +354,11 @@ const OneClickButtonWrapperComponent = ({
     );
   };
 
-  const handleFetchInvoiceCallback = async () => {  
+  const handleFetchInvoiceCallback = async () => {
+    console.log("handle fetchInvoiceCallback --");
+  
     try {
-      const invoiceId = await fetchInvoiceId();
+      const invoiceId = await fetchInvoiceCallback();
       if (invoiceId) {
         handleFetchInvoiceResult(invoiceId);
       } else {
@@ -378,7 +380,8 @@ const OneClickButtonWrapperComponent = ({
 
   const handleOnCompleteCallback = (event) => {
     const { status } = event;
-    handleComplete(status)
+    console.log('OnCompleteCallback status :', status);
+    onComplete(status)
   };
 
 
@@ -405,7 +408,7 @@ const OneClickButtonWrapperComponent = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    height: 88, // Hieght of the button container is fix 88 points
+    height: 88,
     width: '95%', // Set the container width to the screen width
     justifyContent: 'center',
     alignItems: 'center',
@@ -426,7 +429,7 @@ export default OneClickButtonWrapperComponent;
   - **onComplete:** On complete callback which is called at the end of transaction with status (`success`, `alreadyPaid`, `failed`, `cancelled`, `invalidInvoiceId`).
 ### How you use OneClickButtonWrapperComponent
 ```javascript
-import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent.js';
+import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent';
 
 {/* Other components */}
 
