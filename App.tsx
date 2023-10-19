@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent.js';
+import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent';
 
 const App = () => {
   const onComplete = (status: string) => {
