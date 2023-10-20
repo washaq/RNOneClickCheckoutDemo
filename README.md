@@ -417,6 +417,47 @@ const styles = StyleSheet.create({
 
 export default OneClickButtonWrapperComponent;
 ```
+For now android still under development thats why we will add dummy screen for that
+### OneClickButtonWrapperComponent.android.js
+```javascript
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+
+const OneClickButtonWrapperComponent = ({
+  clientId,
+  redirectUri,
+  buttonStyle,
+  environment,
+  fetchInvoiceCallback,
+  onComplete,
+  ...props
+}) => {
+
+  return (
+    <View style={styles.buttonContainer}>
+      <Text style={styles.comingSoonText}>Coming Soon</Text>
+    </View>
+  );  
+};
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    height: 88,
+    width: '95%', // Set the container width to the screen width
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black'
+  },
+  comingSoonText: {
+    // Style your text as needed
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
+export default OneClickButtonWrapperComponent;
+```
 10. Configuration of the button is required as follows to initialize the SDK correctly:
  - **clientId:** Client id of merchant (issued as part of onboarding by Careem)
  - **redirectUri:** Redirect uri, example com.your.app://careemcallback, use uri that when called by Careem will invoke your app.
@@ -429,8 +470,12 @@ export default OneClickButtonWrapperComponent;
   - **onComplete:** On complete callback which is called at the end of transaction with status (`success`, `alreadyPaid`, `failed`, `cancelled`, `invalidInvoiceId`).
 ### How you use OneClickButtonWrapperComponent
 ```javascript
-import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent';
-
+let OneClickButtonWrapperComponent;
+if (Platform.OS === 'ios') {
+    OneClickButtonWrapperComponent = require('./OneClickButtonWrapperComponent.ios.js').default;
+} else {
+    OneClickButtonWrapperComponent = require('./OneClickButtonWrapperComponent.android.js').default;
+}
 {/* Other components */}
 
 <OneClickButtonWrapperComponent
