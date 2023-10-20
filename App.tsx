@@ -6,10 +6,17 @@
  */
 
 import React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import OneClickButtonWrapperComponent from './OneClickButtonWrapperComponent';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 
 const App = () => {
+
+  let OneClickButtonWrapperComponent;
+  if (Platform.OS === 'ios') {
+    OneClickButtonWrapperComponent = require('./OneClickButtonWrapperComponent.ios.js').default;
+  } else {
+    OneClickButtonWrapperComponent = require('./OneClickButtonWrapperComponent.android.js').default;
+  }
+  
   const onComplete = (status: string) => {
     // Logic for handling completion
     console.log("handle complete "+status)
