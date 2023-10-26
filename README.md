@@ -259,7 +259,7 @@ RCT_EXPORT_MODULE();
 ```objective-c
 // OneClickButtonWrapperBridge.m
 
-#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with then name of your project.
+#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with the name of your project.
 #import <React/RCTViewManager.h>
 
 @interface OneClickButtonWrapperBridge : RCTViewManager
@@ -313,7 +313,7 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 ### AppDelegate.mm
 ```objective-c
 // AppDelegate.mm
-#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with then name of your project.
+#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with the name of your project.
 // ....
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
   [OneClickButtonWrapper resumeAuthorizationFlowWithUrl:url];
