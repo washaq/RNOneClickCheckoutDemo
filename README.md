@@ -458,16 +458,19 @@ const styles = StyleSheet.create({
 
 export default OneClickButtonWrapperComponent;
 ```
-10. Configuration of the button is required as follows to initialize the SDK correctly:
- - **clientId:** Client id of merchant (issued as part of onboarding by Careem)
- - **redirectUri:** Redirect uri, example com.your.app://careemcallback, use uri that when called by Careem will invoke your app.
- - **buttonStyle (optional):** Provide functionality to update button style, If not passed then it selects default value.
-     - default value: **style: `midnightBlue`, buttonDescription: `dark`, cornerRadius: `28`**
-     - style (`green`, `white`, `midnightBlue`)
-     - buttonDescription (`dark`, `light`)
- - **environment:** Environment either **`staging`** or **`production`**.
- - **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant needs to generate an invoice and return it within this function.
-  - **onComplete:** On complete callback which is called at the end of transaction with status (`success`, `alreadyPaid`, `failed`, `cancelled`, `invalidInvoiceId`).
+10. To initialize the SDK correctly, you need to configure the button with the following parameters:
+
+- **clientId:** The client ID of the merchant (issued as part of the onboarding process by Careem).
+- **redirectUri:** The redirect URI, for example, `com.your.app://careemcallback`. This URI should invoke your app when called by Careem.
+- **buttonStyle (optional):** This parameter provides functionality to update the button's style. If not provided, it defaults to the following values:
+  - Style: `midnightBlue`
+  - Button Description: `dark`
+  - Corner Radius: `28`
+  - Available options for style: `green`, `white`, `midnightBlue`
+  - Available options for button description: `dark`, `light`
+- **environment:** The environment should be set to either **`staging`** or **`production`**.
+- **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant is responsible for generating an invoice and returning it within this function.
+- **onComplete:** The `onComplete` callback is called at the end of the transaction with one of the following statuses: `success`, `alreadyPaid`, `failed`, `cancelled`, or `invalidInvoiceId`.
 ### How you use OneClickButtonWrapperComponent
 ```javascript
 let OneClickButtonWrapperComponent;
