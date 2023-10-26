@@ -20,7 +20,7 @@ npm install
 # OR using Yarn
 yarn install
 
-# install pod dependencis
+# install pod dependencies
 cd ios/
 
 # then run
