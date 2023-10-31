@@ -31,26 +31,43 @@ const App = () => {
   };
 
   const fetchInvoiceCallback = async () => {
-    return "Return Invoice Id"
+    return "4404abcb-b116-47ac-ade1-6a96d543f5ae"
   };
+  if (Platform.OS === 'ios') {
+    return (
+      <View style={styles.container}>
+        {/* Other components */}
+        <OneClickButtonWrapperComponent
+          clientId="Merchant Mobile Client Id" // Provice your mobile client id
+          redirectUri="Provide-Your-Redirect-Uri://careemcallback" // provide redirectUri
+          buttonStyle={{   // button style optional default values are ( midnightBlue, dark, 28.0)
+            style: 'midnightBlue',  // background color of button, has three options: midnightBlue / green / white
+            buttonDescription: 'dark', // text color of the description that is underneath the button, has two options: dark / light
+            cornerRadius: 28.0 // Corner radius of the button 
+          }}
+          environment="staging" // Environment: staging / production 
+          fetchInvoiceCallback={fetchInvoiceCallback} // Pass the function as a prop that return invoice id 
+          onComplete={onComplete} // Pass the onComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
+        />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        {/* Other components */}
+        <OneClickButtonWrapperComponent
+          clientId="e820c42b-dffb-446d-a461-2fa1f0c94ff1" // Provice your mobile client id
+          redirectUri="com.careem.pay://careemcallback" // provide redirectUri
+          buttonShape = "Rounded" //shape : Rounded / Rectangle / SemiRounded
+          buttonColor = "MidNightBlue" //Color :  Green / MidNightBlue / White
+          environment="staging" // Environment: staging / production 
+          fetchInvoiceCallback={fetchInvoiceCallback} // Pass the function as a prop that return invoice id 
+          onComplete={onComplete} // Pass the onComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
+        />
+      </View>
+    );
+  }
 
-  return (
-    <View style={styles.container}>
-      {/* Other components */}
-      <OneClickButtonWrapperComponent
-        clientId="Merchant Mobile Client Id" // Provice your mobile client id
-        redirectUri="Provide-Your-Redirect-Uri://careemcallback" // provide redirectUri
-        buttonStyle={{   // button style optional default values are ( midnightBlue, dark, 28.0)
-          style: 'midnightBlue',  // background color of button, has three options: midnightBlue / green / white
-          buttonDescription: 'dark', // text color of the description that is underneath the button, has two options: dark / light
-          cornerRadius: 28.0 // Corner radius of the button 
-        }}
-        environment="staging" // Environment: staging / production 
-        fetchInvoiceCallback={fetchInvoiceCallback} // Pass the function as a prop that return invoice id 
-        onComplete={onComplete} // Pass the onComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
-      />
-    </View>
-  );
 };
 
 const styles = StyleSheet.create({
