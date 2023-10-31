@@ -20,7 +20,7 @@ npm install
 # OR using Yarn
 yarn install
 
-# install pod dependencis
+# install pod dependencies
 cd ios/
 
 # then run
@@ -44,12 +44,11 @@ This is one way to run your app — you can also run it directly from within Xco
 
 ## Integerating SDK with your App
 
-Now that you have successfully run the demo app, let's modify your app to integerate OneClickCheckout SDK in it.
+Let's modify your app to integrate the OneClickCheckout SDK into it.
 1. Open Your project in Xcode.
-2. Open `Podfile`.
-3. Add `OneClickCheckout` and `Analytika` frameworks in podfile. Use `1.2.0` or greater version of `OneClickCheckout` for React Native apps. You can see all versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Exclude `arm64` architecture for simulators and add it in `post_install`.
+2. Add `OneClickCheckout` and `Analytika` frameworks in the Podfile. Ensure you are using version `1.2.0` or a newer version of `OneClickCheckout` for React Native apps. You can find all available versions [here](https://careempublic.jfrog.io/ui/native/careem-cocopod-local/OneClickCheckout-iOS). Additionally, exclude the `arm64` architecture for simulators and add it in the `post_install` section of the Podfile.
 
-```bash
+```bash title="Podfile"
 # .......
 
 pod 'Analytika', :http => 'https://careempublic.jfrog.io/artifactory/careem-maven-local/com/careem/analytika/analytika-ios-universal-framework/0.57.0/analytika-ios-universal-framework-0.57.0.zip'
@@ -60,21 +59,21 @@ pod 'OneClickCheckout', :http => "https://careempublic.jfrog.io/artifactory/care
 
 # Exclude `arm64` architecture for simulators.
 post_install do |installer|
-    # ....... other script
-
-    installer.pods_project.targets.each do |target|
-        target.build_configurations.each do |config|
-          # Disable arm64 builds for the simulator
-          config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
-        end
-      end
-
   # ....... other script
+  
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      # Disable arm64 builds for the simulator
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+    end
   end
+  
+  # ....... other script
+end
 ```
-4. Exclude `arm64` for `Any iOS Simulator SDK` from project target as shown in the image `YourProject -> Target -> Build Settings -> Excluded Architecture`
+3. Exclude `arm64` for `Any iOS Simulator SDK` from the project target. You can do this by navigating to `YourProject -> Target -> Build Settings -> Excluded Architecture`, as shown in the image.
 ![Excluded](screenshots/excluded.png)
-5. Install pod dependencies
+4. Install pod dependencies
 ```bash
 # install pod dependencis
 cd ios/
@@ -82,7 +81,19 @@ cd ios/
 # then run
 pod install
 ```
-6. Let's add the wrappers and bridging required to use OneClickSDK. Open your project in Xcode and add a Swift file with the name **`OneClickButtonWrapper.swift`** If you don't already have a **'YourProjectName-Bridging-Header.h'** file, it will ask, **`Would you like to configure an Objective-C bridging header?`** Click on **`Create Bridging Header.`** Also, create **`OneClickEventEmitter.h`** and **`OneClickEventEmitter.m`**, and create a bridge for React Native with the name **`OneClickButtonWrapperBridge.m.`** Replace the code in each class with the code provided in the demo app or copy it from here.
+5. To use the OneClickCheckout SDK, let's add the necessary wrappers and bridging:
+
+   - Open your project in Xcode.
+   
+   - Add a Swift file with the name **`OneClickButtonWrapper.swift`**.
+   
+   - If you don't already have a **'YourProjectName-Bridging-Header.h'** file, you may be asked, **`Would you like to configure an Objective-C bridging header?`**. In that case, click on **`Create Bridging Header.`**
+   
+   - Create **`OneClickEventEmitter.h`** and **`OneClickEventEmitter.m`**.
+   
+   - Create a bridge for React Native with the name **`OneClickButtonWrapperBridge.m.`**
+   
+   - Replace the code in each class with the provided code below.
 ![swift](screenshots/swift.png)
 ![bridgingHeader](screenshots/bridgingHeader.png)
 
@@ -259,7 +270,7 @@ RCT_EXPORT_MODULE();
 ```objective-c
 // OneClickButtonWrapperBridge.m
 
-#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with then name of your project.
+#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with the name of your project.
 #import <React/RCTViewManager.h>
 
 @interface OneClickButtonWrapperBridge : RCTViewManager
@@ -309,11 +320,11 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 @end
 ```
 
-7. In `AppDelegate.mm` add following code.
+6. In `AppDelegate.mm` add following code.
 ### AppDelegate.mm
 ```objective-c
 // AppDelegate.mm
-#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with then name of your project.
+#import "YourProjectName-Swift.h" // Import the Swift header replace YourProjectName with the name of your project.
 // ....
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
   [OneClickButtonWrapper resumeAuthorizationFlowWithUrl:url];
@@ -321,9 +332,9 @@ RCT_EXPORT_METHOD(handleFetchInvoiceResult:(NSString *)invoiceId) {
 }
 
 ```
-8. Add `careem-connect` as LSApplicationQueriesSchemes and redirectUri as URL scheme in info.plist. Also add `Allow Arbitrary Loads` in `App Transport Security Settings` as shown in image.
+7. Add `careem-connect` as an `LSApplicationQueriesSchemes` and `redirectUri` as a `URL scheme` in your `info.plist`. Additionally, include `Allow Arbitrary Loads` in the `App Transport Security Settings`, as shown in the image.
 ![Info.plist](screenshots/info.png)
-9. Now we need to create a `.js` wrapper on react native side that will use native code. Create `OneClickButtonWrapperComponent.ios.js` file on react native side. and copy the following code. Height of the button container is fix **`88 points`**.
+8. Now, we need to create a `.js` wrapper on the React Native side that will utilize native code. Create a file named `OneClickButtonWrapperComponent.ios.js` on the React Native side, and copy the following code. The height of the button container is fixed at 88 points.
 
 ### OneClickButtonWrapperComponent.ios.js
 ```javascript
@@ -458,16 +469,19 @@ const styles = StyleSheet.create({
 
 export default OneClickButtonWrapperComponent;
 ```
-10. Configuration of the button is required as follows to initialize the SDK correctly:
- - **clientId:** Client id of merchant (issued as part of onboarding by Careem)
- - **redirectUri:** Redirect uri, example com.your.app://careemcallback, use uri that when called by Careem will invoke your app.
- - **buttonStyle (optional):** Provide functionality to update button style, If not passed then it selects default value.
-     - default value: **style: `midnightBlue`, buttonDescription: `dark`, cornerRadius: `28`**
-     - style (`green`, `white`, `midnightBlue`)
-     - buttonDescription (`dark`, `light`)
- - **environment:** Environment either **`staging`** or **`production`**.
- - **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant needs to generate an invoice and return it within this function.
-  - **onComplete:** On complete callback which is called at the end of transaction with status (`success`, `alreadyPaid`, `failed`, `cancelled`, `invalidInvoiceId`).
+9. To initialize the SDK correctly, you need to configure the button with the following parameters:
+
+- **clientId:** The client ID of the merchant (issued as part of the onboarding process by Careem).
+- **redirectUri:** The redirect URI, for example, `com.your.app://careemcallback`. This URI should invoke your app when called by Careem.
+- **buttonStyle (optional):** This parameter provides functionality to update the button's style. If not provided, it defaults to the following values:
+  - Style: `midnightBlue`
+  - Button Description: `dark`
+  - Corner Radius: `28`
+  - Available options for style: `green`, `white`, `midnightBlue`
+  - Available options for button description: `dark`, `light`
+- **environment:** The environment should be set to either **`staging`** or **`production`**.
+- **fetchInvoiceCallback:** The `fetchInvoiceCallback` is triggered when the user taps the 'One-Click Checkout' button. The merchant is responsible for generating an invoice and returning it within this function.
+- **onComplete:** The `onComplete` callback is called at the end of the transaction with one of the following statuses: `success`, `alreadyPaid`, `failed`, `cancelled`, or `invalidInvoiceId`.
 ### How you use OneClickButtonWrapperComponent
 ```javascript
 let OneClickButtonWrapperComponent;
