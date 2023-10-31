@@ -56,12 +56,12 @@ const App = () => {
       <View style={styles.container}>
         {/* Other components */}
         <OneClickButtonWrapperComponent
-          clientId="e820c42b-dffb-446d-a461-2fa1f0c94ff1" // Provice your mobile client id
-          redirectUri="com.careem.pay://careemcallback" // provide redirectUri
+          clientId="Merchant Mobile Client Id" // Provice your mobile client id
+          redirectUri="Provide-Your-Redirect-Uri://careemcallback" // provide redirectUri
+          invoiceId = "Invoice Id" // provide invoice id 
           buttonShape = "Rounded" //shape : Rounded / Rectangle / SemiRounded
           buttonColor = "MidNightBlue" //Color :  Green / MidNightBlue / White
           environment="staging" // Environment: staging / production 
-          fetchInvoiceCallback={fetchInvoiceCallback} // Pass the function as a prop that return invoice id 
           onComplete={onComplete} // Pass the onComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
         />
       </View>

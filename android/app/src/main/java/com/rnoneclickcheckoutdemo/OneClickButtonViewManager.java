@@ -1,6 +1,5 @@
 package com.rnoneclickcheckoutdemo;
 
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,8 +38,6 @@ public class OneClickButtonViewManager extends SimpleViewManager<OneClickCheckou
     private String buttonShape = "Rounded";
 
     private String invoiceId = "";
-
-    private InvoiceIdCallback invoiceIdCallback;
 
 
     @NonNull
@@ -85,10 +82,6 @@ public class OneClickButtonViewManager extends SimpleViewManager<OneClickCheckou
     public void setButtonShape(OneClickCheckoutLayout oneClickButton, String buttonShape) {
         this.buttonShape = buttonShape;
         configureButton(oneClickButton);
-    }
-    @ReactMethod
-    public void setInvoiceIdCallback(InvoiceIdCallback callback) {
-        invoiceIdCallback = callback;
     }
 
     @ReactProp(name = "invoiceId") // Add this line to define the prop
@@ -145,10 +138,6 @@ public class OneClickButtonViewManager extends SimpleViewManager<OneClickCheckou
                         @Override
                         public Object getInvoiceId(@NonNull Continuation<? super String> continuation) {
                             sendEvent("getInvoiceId", null);
-                            if (invoiceIdCallback != null) {
-                                invoiceIdCallback.onInvoiceIdReceived(invoiceId);
-                            }
-                            Log.d("newInvoiceId", invoiceId);
                             return invoiceId;
                         }
 

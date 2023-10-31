@@ -2,19 +2,14 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { requireNativeComponent, NativeEventEmitter, NativeModules} from 'react-native';
 export const OneClickButtonView = requireNativeComponent('OneClickButtonWrapper');
-const OneClickButtonViewManager = NativeModules.OneClickButtonViewManager;
-
-export function setInvoiceIdCallback(callback) {
-  OneClickButtonViewManager.setInvoiceIdCallback(callback);
-}
 
 const OneClickButtonWrapperComponent = ({
   clientId,
   redirectUri,
+  invoiceId,
   buttonShape,
   buttonColor,
   environment,
-  fetchInvoiceCallback,
   onComplete,
   ...props
 }) => {
@@ -24,22 +19,8 @@ const OneClickButtonWrapperComponent = ({
     // Define a function to handle the custom event
     const handleGetInvoiceiId = async () => {
         console.log('handleGetInvoiceiId');
-
-        try {
-          setInvoiceIdCallback((invoiceId) => {
-            handleFetchInvoiceResult(invoiceId);
-          });
-        } catch (error) {
-          // Handle any errors that occur during the API call.
-          console.error("API call error:", error);
-          handleFetchInvoiceResult('');
-        }
     };
 
-    const handleFetchInvoiceResult = (invoiceId) => {
-      // Logic for handling fetch invoice
-      OneClickButtonWrapper.handleFetchInvoiceResult(invoiceId);
-    };
   
 
     const handleOnCompletePayment = (event) => {
@@ -71,6 +52,7 @@ const OneClickButtonWrapperComponent = ({
     redirectUrl = {redirectUri} 
     buttonColor = {buttonColor}  
     buttonShape = {buttonShape} 
+    invoiceId = {invoiceId}
     style={styles.buttonContainer} />
   );  
 };
