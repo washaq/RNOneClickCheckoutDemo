@@ -523,3 +523,27 @@ You've successfully integerated OneClickCheckout SDK in your React Native App. :
 
 
 ### For Android
+
+
+Go to project directory in terminal and run the following commands. 
+
+**Minimum Android SDK Target:** 21
+```bash
+# using npm
+npm install
+
+# OR using Yarn
+yarn install
+
+# using npm
+npm start
+npm run android
+
+# OR using Yarn
+yarn start
+yarn android
+```
+
+If everything is set up _correctly_, you should see demo app running in your _Android Simulator_ 
+
+This is one way to run your app — you can also run it directly from within Android Studio.
