@@ -547,3 +547,81 @@ yarn android
 If everything is set up _correctly_, you should see demo app running in your _Android Simulator_ 
 
 This is one way to run your app — you can also run it directly from within Android Studio.
+
+## Integerating Android SDK with your App
+
+Let's modify your app to integrate the OneClickCheckout SDK into it.
+1. Open Your project in Android Studio.
+2. Add `oneclicksdk` maven path in project level build.gradle file.
+
+```bash title="build.gradle"
+# .......
+
+    maven {
+            url "https://careempublic.jfrog.io/artifactory/careem-maven-local"
+            content {
+                includeGroupByRegex "com.careem.*"
+            }
+            mavenContent {
+                releasesOnly()
+            }
+        }
+
+# .......
+
+end
+```
+3. Add `oneclicksdk` as dependency in build.gradle module level file. Ensure you are using version `1.16.0` or a newer version of `oneclicksdk` for React Native apps. You can find all available versions [here](https://careempublic.jfrog.io/ui/native/careem-maven-local/com/careem/oneclicksdk/). Additionally, add manifestPlaceholders for careem in the file.
+
+```bash title="build.gradle"
+# .......
+
+       implementation("com.careem.oneclicksdk:oneclicksdk:1.16.0")
+
+# .......
+
+# ....... other script
+
+      manifestPlaceholders = [
+                'careemRedirectScheme': 'com.careem.pay',
+                'careemRedirectHost'  : 'careemcallback'
+        ]
+
+# ....... other script
+
+end
+```
+4. Set application-wide security config using base-config tag and also add it to manifest file.
+
+```bash title="network_security_config"
+# ....... 
+
+       <?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--Set application-wide security config using base-config tag.-->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">10.0.1.1</domain>
+        <domain includeSubdomains="true">localhost</domain>
+    </domain-config>
+
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
+
+# .......
+
+# ....... manifest script
+
+     <application
+        android:name=".MainApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/AppTheme" >
+
+# ....... manifest script
+
+end
+```
