@@ -569,7 +569,6 @@ Let's modify your app to integrate the OneClickCheckout SDK into it.
 
 # .......
 
-end
 ```
 3. Add `oneclicksdk` as dependency in build.gradle module level file. Ensure you are using version `1.16.0` or a newer version of `oneclicksdk` for React Native apps. You can find all available versions [here](https://careempublic.jfrog.io/ui/native/careem-maven-local/com/careem/oneclicksdk/). Additionally, add manifestPlaceholders for careem in the file.
 
@@ -589,7 +588,6 @@ end
 
 # ....... other script
 
-end
 ```
 4. Set application-wide security config using base-config tag and also add it to manifest file.
 
@@ -623,5 +621,4 @@ end
 
 # ....... manifest script
 
-end
 ```
