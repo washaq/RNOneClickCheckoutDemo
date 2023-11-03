@@ -622,3 +622,195 @@ Let's modify your app to integrate the OneClickCheckout SDK into it.
 # ....... manifest script
 
 ```
+To use the OneClickCheckout SDK, let's add the necessary wrappers and bridging:
+
+   - Open your android folder in Android Studio.
+   
+   - Create a Java class with the name **`OneClickButtonViewManager.java`**. This class will expose oneclicksdk as a view and its properties.
+
+   - Create **`OneClickButtonPackage.java`** and add an instance of **`OneClickButtonViewManager.java`** in this package class.
+   
+   - Finally add instance of **`OneClickButtonPackage.java`** in **`getPackages()`** function of main application class which implements **`ReactApplication`**.
+   
+   - Replace the code in each class with the provided code below.
+
+### OneClickButtonViewManager.java
+
+```bash title="OneClickButtonViewManager"
+# ....... 
+
+public class OneClickButtonViewManager extends SimpleViewManager<OneClickCheckoutLayout> {
+
+    public static final String REACT_CLASS = "OneClickButtonWrapper";
+    private ThemedReactContext themedReactContext;
+
+    private String clientId = null;
+    private String environment = null;
+    private String redirectUrl = null;
+
+    private String buttonColor = "Green";
+
+    private String buttonShape = "Rounded";
+
+    private String invoiceId = "";
+
+
+    @NonNull
+    @Override
+    public String getName() {
+        return REACT_CLASS;
+    }
+
+    @NonNull
+    @Override
+    protected OneClickCheckoutLayout createViewInstance(@NonNull ThemedReactContext themedReactContext) {
+        this.themedReactContext = themedReactContext;
+        return new OneClickCheckoutLayout(themedReactContext.getReactApplicationContext().getCurrentActivity());
+    }
+
+
+    @ReactProp(name = "clientId")
+    public void setClientId(OneClickCheckoutLayout oneClickButton, String clientId) {
+        this.clientId = clientId;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "environment")
+    public void setEnvironment(OneClickCheckoutLayout oneClickButton, String environment) {
+        this.environment = environment;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "redirectUrl")
+    public void setRedirectUrl(OneClickCheckoutLayout oneClickButton, String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "buttonColor")
+    public void setButtonColor(OneClickCheckoutLayout oneClickButton, String buttonColor) {
+        this.buttonColor = buttonColor;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "buttonShape")
+    public void setButtonShape(OneClickCheckoutLayout oneClickButton, String buttonShape) {
+        this.buttonShape = buttonShape;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "invoiceId") // Add this line to define the prop
+    public void setInvoiceId(OneClickCheckoutLayout oneClickButton, String invoiceId) {
+        this.invoiceId = invoiceId;
+        configureButton(oneClickButton);
+    }
+
+    private PaymentEnvironment parsePaymentEnvironment(String environment) {
+        if ("STAGING".equals(environment)) {
+            return PaymentEnvironment.STAGING;
+        } else if ("LIVE".equals(environment)) {
+            return PaymentEnvironment.LIVE;
+        } else {
+            // Handle invalid environment
+            return PaymentEnvironment.STAGING; // Default to STAGING or handle accordingly
+        }
+    }
+
+    private CareemButtonStyle parseButtonStyle(String color, String shape) {
+        return new CareemButtonStyle(getButtonColor(color), getButtonShape(shape));
+    }
+
+    private CareemButtonColor getButtonColor(String color) {
+        if ("Green".equals(color)) {
+            return CareemButtonColor.Green;
+        } else if ("MidNightBlue".equals(color)) {
+            return CareemButtonColor.MidNightBlue;
+        } else if ("White".equals(color)) {
+            return CareemButtonColor.White;
+        } else {
+            return CareemButtonColor.Green;
+        }
+    }
+
+    private CareemButtonShape getButtonShape(String shape) {
+        if ("Rounded".equals(shape)) {
+            return CareemButtonShape.Rounded;
+        } else if ("Rectangle".equals(shape)) {
+            return CareemButtonShape.Rectangle;
+        } else if ("SemiRounded".equals(shape)) {
+            return CareemButtonShape.SemiRounded;
+        } else {
+            return CareemButtonShape.Rounded;
+        }
+    }
+
+
+    private void configureButton(OneClickCheckoutLayout oneClickButton) {
+        if (clientId != null && environment != null && redirectUrl != null) {
+            oneClickButton.configureButton(
+                    new OneClickButtonInterface() {
+                        @Nullable
+                        @Override
+                        public Object getInvoiceId(@NonNull Continuation<? super String> continuation) {
+                            sendEvent("getInvoiceId", null);
+                            return invoiceId;
+                        }
+
+                        @Override
+                        public void onCompletePayment(@NonNull TransactionState transactionState, @NonNull String invoiceId) {
+                            String state = "";
+                            if (transactionState instanceof TransactionState.TransactionSuccess) {
+                                state = "TransactionSuccess";
+                            } else if (transactionState instanceof TransactionState.TransactionFailure) {
+                                state = "TransactionFailure";
+                            } else if (transactionState instanceof TransactionState.TransactionCancelled) {
+                                state = "TransactionCancelled";
+                            } else if (transactionState instanceof TransactionState.InvalidInvoice) {
+                                state = "InvalidInvoice";
+                            }
+                            WritableMap params = Arguments.createMap();
+                            params.putString("transactionState", state);
+                            params.putString("invoiceId", invoiceId);
+                            sendEvent("onCompletePayment", params);
+                        }
+                    },
+                    clientId,
+                    parsePaymentEnvironment(environment),
+                    redirectUrl,
+                    parseButtonStyle(buttonColor, buttonShape));
+        }
+    }
+
+    private void sendEvent(String eventName, WritableMap params) {
+        themedReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    }
+      
+
+# ....... 
+
+```
+### OneClickButtonPackage.java
+
+```bash title="OneClickButtonPackage"
+# .......
+
+       public class OneClickButtonPackage implements ReactPackage {
+
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Arrays.<ViewManager>asList(
+                new OneClickButtonViewManager()
+        );
+    }
+
+    @Override
+    public List<NativeModule> createNativeModules(
+            ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+        return modules;
+    }
+}
+
+# .......
+
+```
