@@ -428,47 +428,7 @@ const styles = StyleSheet.create({
 
 export default OneClickButtonWrapperComponent;
 ```
-For now android still under development thats why we will add dummy screen for that
-### OneClickButtonWrapperComponent.android.js
-```javascript
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
 
-const OneClickButtonWrapperComponent = ({
-  clientId,
-  redirectUri,
-  buttonStyle,
-  environment,
-  fetchInvoiceCallback,
-  onComplete,
-  ...props
-}) => {
-
-  return (
-    <View style={styles.buttonContainer}>
-      <Text style={styles.comingSoonText}>Coming Soon</Text>
-    </View>
-  );  
-};
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    height: 88,
-    width: '95%', // Set the container width to the screen width
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black'
-  },
-  comingSoonText: {
-    // Style your text as needed
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
-
-export default OneClickButtonWrapperComponent;
-```
 9. To initialize the SDK correctly, you need to configure the button with the following parameters:
 
 - **clientId:** The client ID of the merchant (issued as part of the onboarding process by Careem).
@@ -492,18 +452,40 @@ if (Platform.OS === 'ios') {
 }
 {/* Other components */}
 
-<OneClickButtonWrapperComponent
-    clientId="Merchant Mobile Client Id" // Provice your mobile client id
-    redirectUri="Provide-Your-Redirect-Uri://careemcallback" // provide redirectUri
-    buttonStyle={{   // button style optional default values are ( midnightBlue, dark, 28.0)
-      style: 'midnightBlue',  // background color of button, has three options: midnightBlue / green / white
-      buttonDescription: 'dark', // text color of the description that is underneath the button, has two options: dark / light
-      cornerRadius: 28.0 // Corner radius of the button 
-      }}
-    environment="staging" // Environment: staging / production 
-    fetchInvoiceCallback={fetchInvoiceIdFromAPI} // Pass the function as a prop that return invoice id 
-    onComplete={handleComplete} // Pass the handleComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
-  />
+if (Platform.OS === 'ios') {
+    return (
+      <View style={styles.container}>
+        {/* Other components */}
+        <OneClickButtonWrapperComponent
+          clientId="Merchant Mobile Client Id" // Provice your mobile client id
+          redirectUri="Provide-Your-Redirect-Uri://careemcallback" // provide redirectUri
+          buttonStyle={{   // button style optional default values are ( midnightBlue, dark, 28.0)
+            style: 'midnightBlue',  // background color of button, has three options: midnightBlue / green / white
+            buttonDescription: 'dark', // text color of the description that is underneath the button, has two options: dark / light
+            cornerRadius: 28.0 // Corner radius of the button 
+          }}
+          environment="staging" // Environment: staging / production 
+          fetchInvoiceCallback={fetchInvoiceCallback} // Pass the function as a prop that return invoice id 
+          onComplete={onComplete} // Pass the onComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
+        />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        {/* Other components */}
+        <OneClickButtonWrapperComponent
+          clientId="Merchant Mobile Client Id" // Provice your mobile client id
+          redirectUri="Provide-Your-Redirect-Uri://careemcallback" // provide redirectUri
+          invoiceId = "Invoice Id" // provide invoice id 
+          buttonShape = "Rounded" //shape : Rounded / Rectangle / SemiRounded
+          buttonColor = "MidNightBlue" //Color :  Green / MidNightBlue / White
+          environment="staging" // Environment: staging / production 
+          onComplete={onComplete} // Pass the onComplete function as a prop that will receive final status of payment has 5 options: success / alreadyPaid / failed / cancelled / invalidInvoiceId 
+        />
+      </View>
+    );
+  }
 
 {/* Other components */}
 const handleComplete = (status: string) => {
@@ -516,11 +498,6 @@ const fetchInvoiceIdFromAPI = async () => {
 }
 {/* Other components */}
 ```
-
-## Congratulations! :tada:
-[Demo](screenshots/demo.mp4)
-You've successfully integerated OneClickCheckout SDK in your React Native App. :partying_face:
-
 
 ### For Android
 
@@ -622,3 +599,376 @@ Let's modify your app to integrate the OneClickCheckout SDK into it.
 # ....... manifest script
 
 ```
+5. To use the OneClickCheckout SDK, let's add the necessary wrappers and bridging:
+
+   - Open your android folder in Android Studio.
+   
+   - Create a Java class with the name **`OneClickButtonViewManager.java`**. This class will expose oneclicksdk as a view and its properties.
+
+   - Create **`OneClickButtonPackage.java`** and add an instance of **`OneClickButtonViewManager.java`** in this package class.
+   
+   - Finally add instance of **`OneClickButtonPackage.java`** in **`getPackages()`** function of main application class which implements **`ReactApplication`**.
+   
+   - Replace the code in each class with the provided code below.
+
+### OneClickButtonViewManager.java
+
+```bash title="OneClickButtonViewManager"
+# ....... 
+
+public class OneClickButtonViewManager extends SimpleViewManager<OneClickCheckoutLayout> {
+
+    public static final String REACT_CLASS = "OneClickButtonWrapper";
+    private ThemedReactContext themedReactContext;
+
+    private String clientId = null;
+    private String environment = null;
+    private String redirectUrl = null;
+
+    private String buttonColor = "Green";
+
+    private String buttonShape = "Rounded";
+
+    private String invoiceId = "";
+
+
+    @NonNull
+    @Override
+    public String getName() {
+        return REACT_CLASS;
+    }
+
+    @NonNull
+    @Override
+    protected OneClickCheckoutLayout createViewInstance(@NonNull ThemedReactContext themedReactContext) {
+        this.themedReactContext = themedReactContext;
+        return new OneClickCheckoutLayout(themedReactContext.getReactApplicationContext().getCurrentActivity());
+    }
+
+
+    @ReactProp(name = "clientId")
+    public void setClientId(OneClickCheckoutLayout oneClickButton, String clientId) {
+        this.clientId = clientId;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "environment")
+    public void setEnvironment(OneClickCheckoutLayout oneClickButton, String environment) {
+        this.environment = environment;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "redirectUrl")
+    public void setRedirectUrl(OneClickCheckoutLayout oneClickButton, String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "buttonColor")
+    public void setButtonColor(OneClickCheckoutLayout oneClickButton, String buttonColor) {
+        this.buttonColor = buttonColor;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "buttonShape")
+    public void setButtonShape(OneClickCheckoutLayout oneClickButton, String buttonShape) {
+        this.buttonShape = buttonShape;
+        configureButton(oneClickButton);
+    }
+
+    @ReactProp(name = "invoiceId") // Add this line to define the prop
+    public void setInvoiceId(OneClickCheckoutLayout oneClickButton, String invoiceId) {
+        this.invoiceId = invoiceId;
+        configureButton(oneClickButton);
+    }
+
+    private PaymentEnvironment parsePaymentEnvironment(String environment) {
+        if ("STAGING".equals(environment)) {
+            return PaymentEnvironment.STAGING;
+        } else if ("LIVE".equals(environment)) {
+            return PaymentEnvironment.LIVE;
+        } else {
+            // Handle invalid environment
+            return PaymentEnvironment.STAGING; // Default to STAGING or handle accordingly
+        }
+    }
+
+    private CareemButtonStyle parseButtonStyle(String color, String shape) {
+        return new CareemButtonStyle(getButtonColor(color), getButtonShape(shape));
+    }
+
+    private CareemButtonColor getButtonColor(String color) {
+        if ("Green".equals(color)) {
+            return CareemButtonColor.Green;
+        } else if ("MidNightBlue".equals(color)) {
+            return CareemButtonColor.MidNightBlue;
+        } else if ("White".equals(color)) {
+            return CareemButtonColor.White;
+        } else {
+            return CareemButtonColor.Green;
+        }
+    }
+
+    private CareemButtonShape getButtonShape(String shape) {
+        if ("Rounded".equals(shape)) {
+            return CareemButtonShape.Rounded;
+        } else if ("Rectangle".equals(shape)) {
+            return CareemButtonShape.Rectangle;
+        } else if ("SemiRounded".equals(shape)) {
+            return CareemButtonShape.SemiRounded;
+        } else {
+            return CareemButtonShape.Rounded;
+        }
+    }
+
+
+    private void configureButton(OneClickCheckoutLayout oneClickButton) {
+        if (clientId != null && environment != null && redirectUrl != null) {
+            oneClickButton.configureButton(
+                    new OneClickButtonInterface() {
+                        @Nullable
+                        @Override
+                        public Object getInvoiceId(@NonNull Continuation<? super String> continuation) {
+                            sendEvent("getInvoiceId", null);
+                            return invoiceId;
+                        }
+
+                        @Override
+                        public void onCompletePayment(@NonNull TransactionState transactionState, @NonNull String invoiceId) {
+                            String state = "";
+                            if (transactionState instanceof TransactionState.TransactionSuccess) {
+                                state = "TransactionSuccess";
+                            } else if (transactionState instanceof TransactionState.TransactionFailure) {
+                                state = "TransactionFailure";
+                            } else if (transactionState instanceof TransactionState.TransactionCancelled) {
+                                state = "TransactionCancelled";
+                            } else if (transactionState instanceof TransactionState.InvalidInvoice) {
+                                state = "InvalidInvoice";
+                            }
+                            WritableMap params = Arguments.createMap();
+                            params.putString("transactionState", state);
+                            params.putString("invoiceId", invoiceId);
+                            sendEvent("onCompletePayment", params);
+                        }
+                    },
+                    clientId,
+                    parsePaymentEnvironment(environment),
+                    redirectUrl,
+                    parseButtonStyle(buttonColor, buttonShape));
+        }
+    }
+
+    private void sendEvent(String eventName, WritableMap params) {
+        themedReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    }
+      
+
+# ....... 
+
+```
+### OneClickButtonPackage.java
+
+```bash title="OneClickButtonPackage"
+# .......
+
+       public class OneClickButtonPackage implements ReactPackage {
+
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Arrays.<ViewManager>asList(
+                new OneClickButtonViewManager()
+        );
+    }
+
+    @Override
+    public List<NativeModule> createNativeModules(
+            ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+        return modules;
+    }
+}
+
+# .......
+
+```
+### MainApplication.java
+
+```bash title="MainApplication"
+# .......
+
+       public class MainApplication extends Application implements ReactApplication {
+
+    private final ReactNativeHost mReactNativeHost =
+            new ReactNativeHost(this) {
+                @Override
+                public boolean getUseDeveloperSupport() {
+                    return BuildConfig.DEBUG;
+                }
+
+                @Override
+                protected List<ReactPackage> getPackages() {
+                    @SuppressWarnings("UnnecessaryLocalVariable")
+                    List<ReactPackage> packages = new PackageList(this).getPackages();
+                    packages.add(new OneClickButtonPackage());
+                    return packages;
+                }
+
+                @Override
+                protected String getJSMainModuleName() {
+                    return "index";
+                }
+            };
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // If you opted-in for the New Architecture, we enable the TurboModule system
+        //ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+        SoLoader.init(this, /* native exopackage */ false);
+        initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    }
+
+    /**
+     * Loads Flipper in React Native templates. Call this in the onCreate method with something like
+     * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+     *
+     * @param context
+     * @param reactInstanceManager
+     */
+    private static void initializeFlipper(
+            Context context, ReactInstanceManager reactInstanceManager) {
+        if (BuildConfig.DEBUG) {
+            try {
+        /*
+         We use reflection here to pick up the class that initializes Flipper,
+        since Flipper library is not available in release mode
+        */
+                Class<?> aClass = Class.forName("com.collectrndemo.ReactNativeFlipper");
+                aClass
+                        .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
+                        .invoke(null, context, reactInstanceManager);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+}
+
+# .......
+
+```
+6. Now, we need to create a `.js` wrapper on the React Native side that will utilize native android code. Create a file named `OneClickButtonWrapperComponent.android.js` on the React Native side, and copy the following code.
+   
+### OneClickButtonWrapperComponent.android.js
+
+```bash title="OneClickButtonPackage"
+# .......
+
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { requireNativeComponent, NativeEventEmitter, NativeModules} from 'react-native';
+export const OneClickButtonView = requireNativeComponent('OneClickButtonWrapper');
+
+const OneClickButtonWrapperComponent = ({
+  clientId,
+  redirectUri,
+  invoiceId,
+  buttonShape,
+  buttonColor,
+  environment,
+  onComplete,
+  ...props
+}) => {
+
+  const customViewEventEmitter = new NativeEventEmitter();
+
+    // Define a function to handle the custom event
+    const handleGetInvoiceiId = async () => {
+        console.log('handleGetInvoiceiId');
+    };
+
+  
+
+    const handleOnCompletePayment = (event) => {
+      console.log('OnCompleteCallback status :', event.transactionState);
+      onComplete(event.transactionState)
+  };
+
+    // Add a listener for the custom event
+    React.useEffect(() => {
+        const getInvoiceIdSubscription = customViewEventEmitter.addListener(
+            'getInvoiceId',
+            handleGetInvoiceiId
+        );
+
+        const getOnCompletePaymentSubscription = customViewEventEmitter.addListener(
+          'onCompletePayment',
+          handleOnCompletePayment
+      );
+
+        return () => {
+          getInvoiceIdSubscription.remove();
+          getOnCompletePaymentSubscription.remove();
+        };
+    }, []);
+
+
+  return (
+    <OneClickButtonView clientId = {clientId} environment = {environment} 
+    redirectUrl = {redirectUri} 
+    buttonColor = {buttonColor}  
+    buttonShape = {buttonShape} 
+    invoiceId = {invoiceId}
+    style={styles.buttonContainer} />
+  );  
+};
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    height: 88,
+    width: '95%', // Set the container width to the screen width
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  },
+  comingSoonText: {
+    // Style your text as needed
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
+export default OneClickButtonWrapperComponent;
+
+
+# .......
+
+```
+7. The android native code will emit two events which are **handleGetInvoiceiId** and **handleOnCompletePayment**. **handleGetInvoiceiId** is triggered to get invoice id and **handleOnCompletePayment** is triggered when a transaction is completed or cancelled.
+   
+8. To initialize the android SDK correctly, you need to configure the button with the following parameters:
+
+- **clientId:** The client ID of the merchant (issued as part of the onboarding process by Careem).
+- **invoiceId:** The merchant is responsible for generating an invoice and setting an invoice id. 
+- **redirectUri:** The redirect URI, for example, `com.your.app://careemcallback`. This URI should invoke your app when called by Careem.
+- **buttonShape (optional):** This parameter provides functionality to update the shape of button (shape : Rounded / Rectangle / SemiRounded).
+- **buttonColor(optional):** This parameter provides functionality to update the color of button (Color :  Green / MidNightBlue / White).
+- **environment:** The environment should be set to either **`staging`** or **`production`**.
+- **onComplete:** The `onComplete` callback is called at the end of the transaction with one of the following statuses: `success`, `alreadyPaid`, `failed`, `cancelled`, or `invalidInvoiceId`.
+
+## Congratulations! :tada:
+[Demo](screenshots/demo.mp4)
+You've successfully integerated OneClickCheckout SDK in your React Native App. :partying_face:
