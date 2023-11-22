@@ -31,8 +31,42 @@ const App = () => {
   };
 
   const fetchInvoiceCallback = async () => {
-    return "Return Invoice Id"
+    try {
+      const apiUrl = 'https://merchant-gateway.qa.careem-engineering.com/cpay/one-checkout/v1/invoices';
+      const requestData = {
+        "total":{
+          "amount":3900,
+          "currency":"AED"
+        },
+        "tags":{
+          "orderId":{
+             "type":"String",
+             "value":"order1234"
+          }
+        }
+      };
+    
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer <ACCESS TOKEN>',
+          'Content-Type': 'application/json',
+          'X-Idempotency-Key': '<RANDOM UNIQUE STRING>',
+        },
+        body: JSON.stringify(requestData),
+      });
+      const data = await response.json();
+      console.log('API response:', data);
+      var invoiceId = data["id"]
+      console.log('InvoiceId:', invoiceId);
+      // Handle the response data here
+      return invoiceId
+    } catch (error) {
+      console.error('API error:', error);
+      return null
+    }
   };
+  
   if (Platform.OS === 'ios') {
     return (
       <View style={styles.container}>
